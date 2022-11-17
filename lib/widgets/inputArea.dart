@@ -45,7 +45,7 @@ class _InputState extends State<Input> {
               onPressed: submitData,
               child: Text(
                 'Add Transaction',
-                style: TextStyle(color: Colors.purple),
+                style: TextStyle(color: Theme.of(context).primaryColor),
               ),
             ),
           ],
