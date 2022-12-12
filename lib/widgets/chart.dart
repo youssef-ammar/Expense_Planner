@@ -13,28 +13,45 @@ class Chart extends StatelessWidget {
       final weekDay = DateTime.now().subtract(
         Duration(days: index),
       );
-      double totalSum=0.0;
+      double totalSum = 0.0;
       for (var i = 0; i < recentTransaction.length; i++) {
         if (recentTransaction[i].date.day == weekDay.day &&
             recentTransaction[i].date.month == weekDay.month &&
             recentTransaction[i].date.year == weekDay.year) {
-       totalSum+=recentTransaction[i].amount;
-
+          totalSum += recentTransaction[i].amount;
         }
       }
       return {'day': DateFormat.E().format(weekDay), 'amount': totalSum};
     });
   }
 
+  double get totalspending {
+    return groupTransactionsValues.fold(0.0, (sum, element) {
+      return sum + (element['amount'] as double);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Card(
-        elevation: 6, margin: EdgeInsets.all(20), child: Row(children:
-          groupTransactionsValues.map((data){
 
-            return ChartBar(data['day']as String,data['amount']as double,50);
+        elevation: 6,
+        margin: EdgeInsets.all(20),
+        child: Container(
+            padding: EdgeInsets.all(10),
+            child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: groupTransactionsValues.map((data) {
+            return
+              Flexible(
+                  fit: FlexFit.tight,
+                  child:
+              ChartBar(data['day'] as String, data['amount'] as double,
+                 totalspending == 0.0 ? 0.0 : (data['amount'] as double) /
+                totalspending));
           }).toList(),
-
-    ));
+        )
+        )
+    );
   }
 }

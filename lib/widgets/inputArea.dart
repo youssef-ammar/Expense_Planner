@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 
 class Input extends StatefulWidget {
- // const Input({Key? key}) : super(key: key);
+  // const Input({Key? key}) : super(key: key);
   final Function addTx;
 
   Input(this.addTx);
+
   @override
   State<Input> createState() => _InputState();
 }
@@ -22,6 +23,7 @@ class _InputState extends State<Input> {
     widget.addTx(entredTitle, enteredAmount);
     Navigator.of(context).pop();
   }
+
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -41,11 +43,27 @@ class _InputState extends State<Input> {
               keyboardType: TextInputType.number,
               onSubmitted: (_) => submitData(),
             ),
-            TextButton(
+            Container(
+                height: 70,
+                child: Row(
+                  children: [
+                    Text("No Date chosen!"),
+                    TextButton(
+                      onPressed: () {},
+                      child: Text(
+                        "Choose date",
+                        style: TextStyle(color: Theme.of(context).primaryColor),
+                      ),
+                    ),
+                  ],
+                )),
+            ElevatedButton(
               onPressed: submitData,
+              //style: TextButton.styleFrom(co),
               child: Text(
                 'Add Transaction',
-                style: TextStyle(color: Theme.of(context).primaryColor),
+                style: TextStyle(color: Colors.white),
+
               ),
             ),
           ],
@@ -54,4 +72,3 @@ class _InputState extends State<Input> {
     );
   }
 }
-

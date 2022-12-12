@@ -14,9 +14,9 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   List<Transaction> transactions = [
-    // Transaction(
-    //     id: "t1", title: "New shoes", amount: 60.5, date: DateTime.now()),
-    // Transaction(id: "t2", title: "eating", amount: 70, date: DateTime.now()),
+    Transaction(
+        id: "t1", title: "New shoes", amount: 60.5, date: DateTime.now()),
+    Transaction(id: "t2", title: "eating", amount: 70, date: DateTime.now()),
   ];
 
   void _addNewTransaction(String tit, double am) {
@@ -97,4 +97,5 @@ class FabExample extends StatelessWidget {
       ),
     );
   }
+
 }
