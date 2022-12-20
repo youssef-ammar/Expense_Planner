@@ -14,22 +14,28 @@ class App extends StatefulWidget {
 
 class _AppState extends State<App> {
   List<Transaction> transactions = [
-    Transaction(
-        id: "t1", title: "New shoes", amount: 60.5, date: DateTime.now()),
-    Transaction(id: "t2", title: "eating", amount: 70, date: DateTime.now()),
+    // Transaction(
+    //     id: "t1", title: "New shoes", amount: 60.5, date: DateTime.now()),
+    // Transaction(id: "t2", title: "eating", amount: 70, date: DateTime.now()),
   ];
 
-  void _addNewTransaction(String tit, double am) {
+  void _addNewTransaction(String tit, double am,DateTime dt) {
     setState(() {
       //print("done")
       transactions.add(Transaction(
           id: DateTime.now().toString(),
           title: tit,
           amount: am,
-          date: DateTime.now()));
+          date: dt));
     });
   }
+  void _delTransaction(String id){
+    setState(() {
+      transactions.removeWhere((element) => element.id==id);
+    });
 
+
+  }
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -48,7 +54,7 @@ class _AppState extends State<App> {
                   fontFamily: 'OpenSans',
                   fontSize: 20,
                   fontWeight: FontWeight.bold))),
-      home: FabExample(_addNewTransaction, transactions),
+      home: FabExample(_addNewTransaction, transactions,_delTransaction),
     );
   }
 }
@@ -56,8 +62,9 @@ class _AppState extends State<App> {
 class FabExample extends StatelessWidget {
   final Function addtx;
   final List<Transaction> transactions;
+  final Function deltx;
 
-  FabExample(this.addtx, this.transactions);
+  FabExample(this.addtx, this.transactions,this.deltx);
 
   void _startAddNewTrans(BuildContext context) {
     showModalBottomSheet(
@@ -87,7 +94,7 @@ class FabExample extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
               Chart(recentTransaction),
-              Trans(transactions),
+              Trans(transactions,deltx),
             ]),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,

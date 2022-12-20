@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class Input extends StatefulWidget {
   // const Input({Key? key}) : super(key: key);
@@ -13,6 +14,7 @@ class Input extends StatefulWidget {
 class _InputState extends State<Input> {
   final titleController = TextEditingController();
   final amountController = TextEditingController();
+  DateTime? _selectedDate;
 
   void submitData() {
     final entredTitle = titleController.text;
@@ -20,8 +22,25 @@ class _InputState extends State<Input> {
     if ((entredTitle.isEmpty) || (enteredAmount <= 0)) {
       return;
     }
-    widget.addTx(entredTitle, enteredAmount);
+    widget.addTx(entredTitle, enteredAmount,_selectedDate);
     Navigator.of(context).pop();
+  }
+
+  void presentDatePicker() {
+    showDatePicker(
+            context: context,
+            initialDate: DateTime.now(),
+            firstDate: DateTime(2022),
+            lastDate: DateTime.now())
+        .then((pickedDate) {
+      if (pickedDate == null) {
+        return;
+      }
+      setState(() {
+        _selectedDate = pickedDate;
+
+      });
+    });
   }
 
   @override
@@ -47,9 +66,13 @@ class _InputState extends State<Input> {
                 height: 70,
                 child: Row(
                   children: [
-                    Text("No Date chosen!"),
+                    Expanded(
+                      child: Text(_selectedDate == null
+                          ? "No Date chosen!"
+                          : "picked Date:${DateFormat.yMd().format(_selectedDate as DateTime)}"),
+                    ),
                     TextButton(
-                      onPressed: () {},
+                      onPressed: presentDatePicker,
                       child: Text(
                         "Choose date",
                         style: TextStyle(color: Theme.of(context).primaryColor),
@@ -63,7 +86,6 @@ class _InputState extends State<Input> {
               child: Text(
                 'Add Transaction',
                 style: TextStyle(color: Colors.white),
-
               ),
             ),
           ],
