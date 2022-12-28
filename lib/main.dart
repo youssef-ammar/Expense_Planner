@@ -1,8 +1,8 @@
+import 'dart:io';
 import 'package:app/widgets/inputArea.dart';
 import 'package:app/widgets/list_transaction.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-
+import 'package:flutter/cupertino.dart';
 import 'models/transaction.dart';
 import 'widgets/chart.dart';
 
@@ -14,7 +14,8 @@ void main() {
 // ]);
 //
 
-  runApp(App());}
+  runApp(App());
+}
 
 class App extends StatefulWidget {
   @override
@@ -48,13 +49,8 @@ class _AppState extends State<App> {
       transactions.removeWhere((element) => element.id == id);
     });
   }
-  void _chartShow(bool val,bool show){
-    setState(() {
-      show=val;
 
-    });
 
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,92 +60,136 @@ class _AppState extends State<App> {
           primarySwatch: Colors.purple,
           accentColor: Colors.amber,
           fontFamily: 'Quicksand',
-          textTheme: TextTheme(
+          textTheme: const TextTheme(
               headline6: TextStyle(
                   fontFamily: 'OpenSans',
                   fontSize: 18,
                   fontWeight: FontWeight.bold)),
-          appBarTheme: AppBarTheme(
+          appBarTheme: const AppBarTheme(
               titleTextStyle: TextStyle(
                   fontFamily: 'OpenSans',
                   fontSize: 20,
                   fontWeight: FontWeight.bold))),
-      home: FabExample(_addNewTransaction, transactions, _delTransaction,_chartShow),
+      home: FabExample(_addNewTransaction, transactions, _delTransaction),
     );
   }
 }
 
-class FabExample extends StatelessWidget {
-  final Function addtx;
+class FabExample extends StatefulWidget {
+  final Function addTx;
   final List<Transaction> transactions;
-  final Function deltx;
-  final Function showCh;
+  final Function delTx;
 
-  FabExample(this.addtx, this.transactions, this.deltx,this.showCh);
+  const FabExample(this.addTx, this.transactions, this.delTx);
+
+  @override
+  State<FabExample> createState() => FabExampleState();
+}
+
+class FabExampleState extends State<FabExample> {
+  // final Function showCh;
 
   void _startAddNewTrans(BuildContext context) {
     showModalBottomSheet(
         context: context,
         builder: (BuildContext context) {
-          return Input(addtx);
+          return Input(widget.addTx);
         });
   }
 
-  bool _showChart=false;
+  bool _showChart = false;
+
   List<Transaction> get recentTransaction {
-    return transactions.where((tx) {
+    return widget.transactions.where((tx) {
       return tx.date.isAfter(DateTime.now().subtract(
-        Duration(days: 7),
+        const Duration(days: 7),
       ));
     }).toList();
   }
 
   @override
   Widget build(BuildContext context) {
-
+    final isLandscape = MediaQuery.of(context).orientation == Orientation.landscape;
+    final media = MediaQuery.of(context);
     final appBar = AppBar(
-      title: Text('Personal Expenses'),
+      title: const Text('Personal Expenses'),
     );
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
+    final pageBody = SingleChildScrollView(
         child: Column(
 // by default mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: <Widget>[
-            // MediaQuery.of(context).orientation==Orientation.landscape ?
-            //      Row( mainAxisAlignment: MainAxisAlignment.center, children: [
-            //
-            //        Text("Show Chart"),
-            //        Switch(value: _showChart, onChanged: (val){
-            //          showCh(val,_showChart);
-            //          print(_showChart);
-            //
-            //
-            //        }),
-            //      ],)
-            // :
-              // _showChart ?
-               Container(
-                height: (MediaQuery.of(context).size.height -
+              if (isLandscape )
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text("Show Chart"),
+                    Switch.adaptive(
+                        value: _showChart,
+                        onChanged: (val) {
+                          setState(() {
+                            _showChart = val;
+                          });
+                        }),
+                  ],
+                ),
+
+              if (!isLandscape)
+
+                Container(
+                  height: (media.size.height -
+                      appBar.preferredSize.height -
+                      media.padding.top) *
+                      0.3,
+                  child: Chart(recentTransaction),
+                )
+
+              ,
+              if (!isLandscape)
+                Container(
+                height: (media.size.height -
                         appBar.preferredSize.height -
-                        MediaQuery.of(context).padding.top) *
-                    0.3,
-                child: Chart(recentTransaction),
-              ),
-              //:
-              Container(
-                  height: (MediaQuery.of(context).size.height -
-                          appBar.preferredSize.height -
-                          MediaQuery.of(context).padding.top) *
-                      0.7,
-                  child: Trans(transactions, deltx)),
-            ]),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: FloatingActionButton(
+                        media.padding.top) *
+                    0.7,
+                child: Trans(widget.transactions, widget.delTx)),
+
+              if (isLandscape)
+                if(_showChart)
+                  Container(
+                    height: (media.size.height -
+                        appBar.preferredSize.height -
+                        media.padding.top)
+                        ,
+                    child: Chart(recentTransaction),
+                  ),
+              if (!_showChart)
+                Container(
+                    height: (media.size.height -
+                        appBar.preferredSize.height -
+                        media.padding.top)
+                        ,
+                    child: Trans(widget.transactions, widget.delTx)),
+
+            ]
+        )
+    );
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            child: pageBody,
+           navigationBar: const CupertinoNavigationBar(),
+    )
+        : Scaffold(
+         appBar: appBar,
+          body: pageBody,
+         floatingActionButtonLocation:
+           FloatingActionButtonLocation.centerFloat,
+          floatingActionButton: Platform.isIOS
+          ? Container()
+          : FloatingActionButton(
+        // Iphone styling
         onPressed: () => _startAddNewTrans(context),
-        child: Icon(Icons.add),
+        child: const Icon(Icons.add),
       ),
     );
   }

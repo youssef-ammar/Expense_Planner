@@ -6,7 +6,7 @@ import 'package:intl/intl.dart';
 class Chart extends StatelessWidget {
   final List<Transaction> recentTransaction;
 
-  Chart(this.recentTransaction);
+  const Chart(this.recentTransaction);
 
   List<Map<String, Object>> get groupTransactionsValues {
     return List.generate(7, (index) {
@@ -25,7 +25,7 @@ class Chart extends StatelessWidget {
     });
   }
 
-  double get totalspending {
+  double get totalSpending {
     return groupTransactionsValues.fold(0.0, (sum, element) {
       return sum + (element['amount'] as double);
     });
@@ -36,9 +36,9 @@ class Chart extends StatelessWidget {
     return Card(
 
         elevation: 6,
-        margin: EdgeInsets.all(20),
+        margin: const EdgeInsets.all(20),
         child: Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: groupTransactionsValues.map((data) {
@@ -47,8 +47,10 @@ class Chart extends StatelessWidget {
                   fit: FlexFit.tight,
                   child:
               ChartBar(data['day'] as String, data['amount'] as double,
-                 totalspending == 0.0 ? 0.0 : (data['amount'] as double) /
-                totalspending));
+                 totalSpending == 0.0 ? 0.0 : (data['amount'] as double) /
+                totalSpending)
+
+              );
           }).toList(),
         )
         )

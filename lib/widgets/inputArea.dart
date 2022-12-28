@@ -5,7 +5,7 @@ class Input extends StatefulWidget {
   // const Input({Key? key}) : super(key: key);
   final Function addTx;
 
-  Input(this.addTx);
+  const Input(this.addTx);
 
   @override
   State<Input> createState() => _InputState();
@@ -17,12 +17,12 @@ class _InputState extends State<Input> {
   DateTime? _selectedDate;
 
   void submitData() {
-    final entredTitle = titleController.text;
+    final enteredTitle = titleController.text;
     final enteredAmount = double.parse(amountController.text);
-    if ((entredTitle.isEmpty) || (enteredAmount <= 0)) {
+    if ((enteredTitle.isEmpty) || (enteredAmount <= 0)) {
       return;
     }
-    widget.addTx(entredTitle, enteredAmount,_selectedDate);
+    widget.addTx(enteredTitle, enteredAmount,_selectedDate);
     Navigator.of(context).pop();
   }
 
@@ -47,17 +47,17 @@ class _InputState extends State<Input> {
   Widget build(BuildContext context) {
     return Card(
       child: Container(
-        padding: EdgeInsets.all(10),
+        padding: const EdgeInsets.all(10),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             TextField(
-              decoration: InputDecoration(labelText: 'Title'),
+              decoration: const InputDecoration(labelText: 'Title'),
               controller: titleController,
               onSubmitted: (_) => submitData(),
             ),
             TextField(
-              decoration: InputDecoration(labelText: 'Amount'),
+              decoration: const InputDecoration(labelText: 'Amount'),
               controller: amountController,
               keyboardType: TextInputType.number,
               onSubmitted: (_) => submitData(),
@@ -83,7 +83,7 @@ class _InputState extends State<Input> {
             ElevatedButton(
               onPressed: submitData,
               //style: TextButton.styleFrom(co),
-              child: Text(
+              child: const Text(
                 'Add Transaction',
                 style: TextStyle(color: Colors.white),
               ),
